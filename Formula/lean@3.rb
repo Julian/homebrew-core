@@ -1,10 +1,10 @@
-class Lean < Formula
-  desc "Lean Theorem Prover"
-  homepage "https://leanprover.github.io/"
-  url "https://github.com/leanprover/lean4/archive/v4.0.0-m2.tar.gz"
+class LeanAT3 < Formula
+  desc "Lean 3 Theorem Prover"
+  homepage "https://leanprover-community.github.io/"
+  url "https://github.com/leanprover-community/lean/archive/v3.32.1.tar.gz"
   sha256 "402b89ff4d368fd6597dd87c521fd2fe456c6b2b90c99d85f57523661bdd94be"
   license "Apache-2.0"
-  head "https://github.com/leanprover/lean4.git"
+  head "https://github.com/leanprover-community/lean.git"
 
   depends_on "cmake" => :build
   depends_on "coreutils"
@@ -25,11 +25,14 @@ class Lean < Formula
     (testpath/"hello.lean").write <<~EOS
       def id' {α : Type} (x : α) : α := x
 
+      inductive tree (α : Type) : Type
+      | node : α → list tree → tree
+
       example (a b : Prop) : a ∧ b -> b ∧ a :=
-      by
-        intro h
-        cases h
-        exact ⟨by assumption, by assumption⟩
+      begin
+          intro h, cases h,
+          split, repeat { assumption }
+      end
     EOS
     system bin/"lean", testpath/"hello.lean"
     system bin/"leanpkg", "help"
